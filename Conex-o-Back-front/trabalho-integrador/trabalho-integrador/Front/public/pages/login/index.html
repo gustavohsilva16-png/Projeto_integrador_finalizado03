@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#174d36">
+    <title>Entrar - EcoSkin</title>
+    <link rel="icon" type="image/png" href="../../assets/images/auth/logo-ecoskin.png">
+    <link rel="stylesheet" href="../../../src/styles/auth.css">
+    <script src="../../../src/scripts/auth.js" defer></script>
+    <script src="../../../src/scripts/login.js" defer></script>
+</head>
+<body>
+    <main class="tela-acesso">
+        <div class="decoracao">
+            <div class="carrossel">
+                <div class="slides" id="slides">
+                    <div class="slide" style="background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 40%), url('../../assets/images/auth/slide-1.jpg');">
+                        <p class="slide-texto">Cosméticos naturais inspirados na natureza.</p>
+                    </div>
+                    <div class="slide" style="background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 40%), url('../../assets/images/auth/slide-2.jpg');">
+                        <p class="slide-texto">Cuidado sustentável para a sua pele todos os dias.</p>
+                    </div>
+                    <div class="slide" style="background-image: linear-gradient(to top, rgba(0, 0, 0, 0.6) 0%, transparent 40%), url('../../assets/images/auth/slide-3.jpg');">
+                        <p class="slide-texto">100% vegano, livre de crueldade e eco-friendly.</p>
+                    </div>
+                </div>
+
+                <div class="titulo-overlay">
+                    <h1><a href="../../index.html"><span class="titulo1">Eco</span><span class="titulo2">Skin</span></a></h1>
+                </div>
+
+                <button type="button" class="seta anterior" id="prev" aria-label="Imagem anterior">&#10094;</button>
+                <button type="button" class="seta proximo" id="next" aria-label="Próxima imagem">&#10095;</button>
+
+                <div class="indicadores" id="indicadores">
+                    <span class="ponto ativo" data-index="0"></span>
+                    <span class="ponto" data-index="1"></span>
+                    <span class="ponto" data-index="2"></span>
+                </div>
+            </div>
+        </div>
+        <div class="dados">
+            <div class="cartao-form">
+                <h1 class="titulo">Login</h1>
+                <form id="form-login" class="form-acesso">
+                    <input type="email" name="email" id="email" placeholder="E-mail" autocomplete="email" required>
+                    <input type="password" name="senha" id="senha" placeholder="Senha" autocomplete="current-password" required>
+                    <p id="mensagem-login" class="mensagem-form" role="status" aria-live="polite"></p>
+
+                    <div class="botoes">
+                        <button type="submit" class="botao" id="botao-entrar">Entrar</button>
+                        <a href="../cadastro/index.html" class="botao botao-secundario">Cadastre-se</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
