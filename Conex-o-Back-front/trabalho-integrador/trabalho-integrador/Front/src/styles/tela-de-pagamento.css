@@ -1,0 +1,253 @@
+* {
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #14452f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.pagamento-container {
+  background-color: #e8f5e9;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+}
+
+h2 {
+  margin-top: 0;
+  color: #333;
+  text-align: center;
+}
+
+.opcoes-pagamento {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.btn-opcao {
+  flex: 1;
+  padding: 12px 8px;
+  border: 2px solid #ddd;
+  background-color: #fff;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.icone {
+  width: 24px;
+  height: 24px;
+}
+
+
+.btn-opcao:hover {
+  border-color: #2e7d32;
+  color: #2e7d32;
+}
+
+.btn-opcao.ativo {
+  border-color: #2e7d32;
+  background-color: #c8e6c9;
+  color: #1b5e20;
+}
+
+
+.tela-dinamica {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  display: none;
+}
+
+.pix-box {
+  text-align: center;
+}
+
+.qr-placeholder {
+  width: 160px;
+  height: 160px;
+  background-color: #eee;
+  margin: 15px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px dashed #bbb;
+  border-radius: 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+.chave-pix {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  text-align: center;
+  background: #f9f9f9;
+}
+
+.form-grupo {
+  margin-bottom: 15px;
+}
+
+.form-grupo label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #444;
+}
+
+.form-grupo input, .form-grupo select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.linha-dupla {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-confirmar {
+  width: 100%;
+  padding: 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.btn-confirmar:hover {
+  background-color: #218838;
+}
+
+/* Botão secundário (Copiar Pix / Imprimir) */
+.btn-secundario {
+  width: 100%;
+  padding: 10px;
+  background-color: #ffffff;
+  color: #1b5e20;
+  border: 2px solid #2e7d32;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 8px;
+}
+
+.btn-secundario:hover {
+  background-color: #c8e6c9;
+}
+
+/* Estilo da Nota Fiscal */
+.nota-fiscal {
+  background-color: #fffef0; /* Tom levemente amarelado de cupom fiscal */
+  border: 1px dashed #888;
+  border-radius: 8px;
+  padding: 20px;
+  color: #333;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.nf-cabecalho {
+  text-align: center;
+  border-bottom: 1px dashed #aaa;
+  padding-bottom: 12px;
+  margin-bottom: 15px;
+}
+
+.nf-selo {
+  display: inline-block;
+  background-color: #2e7d32;
+  color: #fff;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-family: 'Segoe UI', sans-serif;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.nf-cabecalho h3 {
+  margin: 5px 0;
+  font-size: 16px;
+}
+
+.nf-numero {
+  margin: 0;
+  font-size: 13px;
+  color: #666;
+}
+
+.nf-linha {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.nf-total {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px dashed #aaa;
+  border-bottom: 1px dashed #aaa;
+  padding: 12px 0;
+  margin: 15px 0;
+  font-size: 16px;
+}
+
+.nf-acoes {
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.resumo-pagamento {
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  border: 1px solid #cfe3d1;
+  font-size: 14px;
+}
+
+.resumo-pagamento ul {
+  margin: 8px 0;
+  padding-left: 18px;
+}
+
+.resumo-total {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed #aaa;
+  font-size: 16px;
+}
+
+.mensagem-pagamento {
+  margin: 10px 0;
+  color: #155724;
+  text-align: center;
+}
+

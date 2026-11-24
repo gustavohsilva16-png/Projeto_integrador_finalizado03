@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tela de Pagamento</title>
+  <link rel="stylesheet" href="/src/styles/tela-de-pagamento.css">
+</head>
+<body>
+  <div class="pagamento-container">
+    <h2>Forma de Pagamento</h2>
+    <div id="resumo-pagamento" class="resumo-pagamento"></div>
+    <div class="opcoes-pagamento">
+      <button class="btn-opcao" onclick="selecionarPagamento('debito', this)">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+        </svg>
+        <span>Débito</span>
+      </button>
+
+      
+      <button class="btn-opcao" onclick="selecionarPagamento('credito', this)">
+        <svg class="icone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="5" width="20" height="14" rx="2"/>
+          <line x1="2" y1="10" x2="22" y2="10"/>
+          <line x1="6" y1="15" x2="10" y2="15"/>
+        </svg>
+        <span>Crédito</span>
+      </button>
+
+      <button class="btn-opcao" onclick="selecionarPagamento('pix', this)">
+        <svg class="icone" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M15.45 16.52l-3.01-3.01c-.24-.24-.64-.24-.88 0l-3.01 3.01c-.62.62-1.44.96-2.32.96h-.6l3.79 3.79c1.43 1.43 3.74 1.43 5.17 0l3.79-3.79h-.6c-.88 0-1.7-.34-2.33-.96zm-6.9-9.04l3.01 3.01c.24.24.64.24.88 0l3.01-3.01c.62-.62 1.44-.96 2.32-.96h.6L14.59 2.73c-1.43-1.43-3.74-1.43-5.17 0L5.63 6.52h.6c.88 0 1.7.34 2.32.96zm12.72 2.94l-2.29-2.29c-.18.06-.37.1-.57.1h-.6c-.53 0-1.04.21-1.41.59l-3.01 3.01c-.46.46-1.08.72-1.74.72s-1.28-.26-1.74-.72L6.91 8.82c-.38-.38-.88-.59-1.41-.59h-.6c-.2 0-.39-.04-.57-.1l-2.29 2.29c-1.43 1.43-1.43 3.74 0 5.17l2.29 2.29c.18-.06.37-.1.57-.1h.6c.53 0 1.04-.21 1.41-.59l3.01-3.01c.96-.96 2.52-.96 3.48 0l3.01 3.01c.38.38.88.59 1.41.59h.6c.2 0 .39.04.57.1l2.29-2.29c1.43-1.43 1.43-3.74 0-5.17z"/>
+        </svg>
+        <span>Pix</span>
+      </button>
+    </div>
+
+    <div id="area-pagamento" class="tela-dinamica"></div>
+  </div>
+
+  <script src="/src/scripts/tela-de-pagamento.js"></script>
+</body>
+</html>
+

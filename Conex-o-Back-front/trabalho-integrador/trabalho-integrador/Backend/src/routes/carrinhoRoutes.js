@@ -12,4 +12,7 @@ router.post('/carrinho', exigirAutenticacao, carrinhoController.adicionar);
 // Exige sessao e remove somente um item pertencente ao cliente autenticado.
 router.delete('/carrinho/:id_carrinho', exigirAutenticacao, carrinhoController.remover);
 
+// Atualiza a quantidade de um item pertencente ao cliente autenticado.
+router.put('/carrinho/:id_carrinho', exigirAutenticacao, carrinhoController.atualizarQuantidade);
+
 module.exports = router;

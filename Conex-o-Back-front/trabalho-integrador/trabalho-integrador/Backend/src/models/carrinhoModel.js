@@ -58,6 +58,26 @@ const CarrinhoModel = {
                 connection.release();
             }
         }
+    },
+
+    // Atualiza somente uma linha do carrinho que pertence ao cliente autenticado.
+    async atualizarQuantidade(idCarrinho, idCliente, quantidade) {
+        let connection;
+
+        try {
+            connection = await database.getConnection();
+            const result = await connection.query(
+                `UPDATE carrinho_de_compra
+                 SET quantidade = ?
+                 WHERE id_carrinho = ? AND id_cliente = ?`,
+                [quantidade, idCarrinho, idCliente]
+            );
+            return result.affectedRows;
+        } finally {
+            if (connection) {
+                connection.release();
+            }
+        }
     }
 };
 

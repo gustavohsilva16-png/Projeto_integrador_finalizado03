@@ -95,6 +95,21 @@ test('GET /pages/login/ e /pages/cadastro/ entregam as telas de acesso', async (
     assert.match(await cadastro.text(), /id="form-cadastro"/);
 });
 
+test('GET /pages/pagamento/ entrega a tela de checkout', async () => {
+    const pagamento = await fetch(`${baseUrl}/pages/pagamento/`);
+    assert.equal(pagamento.status, 200);
+    assert.match(await pagamento.text(), /id="resumo-pagamento"/);
+});
+
+test('POST /api/finalizar-compra exige sessao', async () => {
+    const response = await fetch(`${baseUrl}/api/finalizar-compra`, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ metodo_pagamento: 'PIX' })
+    });
+    assert.equal(response.status, 401);
+});
+
 // Confirma que o cadastro rejeita dados incompletos antes de acessar o banco.
 test('POST /api/cadastro sem dados retorna HTTP 400', async () => {
     const response = await fetch(`${baseUrl}/api/cadastro`, {

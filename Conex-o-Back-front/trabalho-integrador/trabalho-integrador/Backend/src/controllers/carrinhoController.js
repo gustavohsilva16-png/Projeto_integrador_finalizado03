@@ -67,6 +67,34 @@ const carrinhoController = {
             console.error('Erro ao remover item do carrinho:', error);
             return res.status(500).json({ error: 'Falha ao remover item do carrinho.' });
         }
+    },
+
+    // Atualiza uma quantidade inteira positiva no carrinho do cliente autenticado.
+    async atualizarQuantidade(req, res) {
+        const idCarrinho = Number(req.params.id_carrinho);
+        const quantidade = Number(req.body.quantidade);
+
+        if (!Number.isSafeInteger(idCarrinho) || idCarrinho < 1) {
+            return res.status(400).json({ error: 'Identificador de item invalido.' });
+        }
+        if (!Number.isSafeInteger(quantidade) || quantidade < 1) {
+            return res.status(400).json({ error: 'Quantidade inteira positiva obrigatoria.' });
+        }
+
+        try {
+            const atualizados = await CarrinhoModel.atualizarQuantidade(
+                idCarrinho,
+                req.auth.id_cliente,
+                quantidade
+            );
+            if (atualizados === 0) {
+                return res.status(404).json({ error: 'Item do carrinho nao encontrado.' });
+            }
+            return res.status(200).json({ message: 'Quantidade atualizada.' });
+        } catch (error) {
+            console.error('Erro ao atualizar quantidade:', error);
+            return res.status(500).json({ error: 'Falha ao atualizar quantidade.' });
+        }
     }
 };
 

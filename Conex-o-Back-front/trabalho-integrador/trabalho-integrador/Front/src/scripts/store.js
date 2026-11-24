@@ -31,6 +31,83 @@ async function verificarConexaoBackend() {
 
 verificarConexaoBackend();
 
+    async function obterUsuarioLogado() {
+      try {
+        return JSON.parse(localStorage.getItem('ecoskin_usuario'));
+      } catch {
+        return null;
+      }
+    }
+
+    async function integrarCatalogoBackend() {
+      try {
+        const response = await fetch(`${apiBaseUrl}/produtos`, { credentials: 'include' });
+        if (!response.ok) return;
+        const produtos = await response.json();
+
+        document.querySelectorAll('.card-produto').forEach((card, indice) => {
+          const nomeVisivel = String(card.getAttribute('data-nome')).toLowerCase();
+          let produto;
+          if (/sabonete/i.test(nomeVisivel)) {
+            produto = produtos.find(item => /sabonete/i.test(item.nome) || /sabonete/i.test(item.categoria));
+          } else if (/shampoo/i.test(nomeVisivel)) {
+            produto = produtos.find(item => /shampoo/i.test(item.nome) || /capilar/i.test(item.categoria));
+          } else if (/creme/i.test(nomeVisivel)) {
+            produto = produtos.find(item => /creme/i.test(item.nome) || /corporal/i.test(item.categoria));
+          } else {
+            produto = produtos[indice];
+          }
+
+          if (produto) {
+            card.setAttribute('data-produto-id', String(produto.id_produto));
+            card.setAttribute('data-preco', String(produto.preco));
+            const precoEl = card.querySelector('.preco');
+            if (precoEl) {
+              precoEl.textContent = `R$ ${Number(produto.preco).toFixed(2).replace('.', ',')}`;
+            }
+          }
+        });
+      } catch (error) {
+        console.warn('Não foi possível integrar o catálogo:', error);
+      }
+    }
+
+    async function carregarCarrinhoBackend() {
+      const usuario = await obterUsuarioLogado();
+      if (!usuario || !usuario.id_cliente) return;
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/carrinho/${usuario.id_cliente}`, {
+          credentials: 'include'
+        });
+        if (!response.ok) return;
+
+        const itens = await response.json();
+        carrinho = itens.map(item => ({
+          id_carrinho: item.id_carrinho,
+          id_produto: item.id_produto,
+          nome: item.nome,
+          preco: Number(item.preco),
+          icone: inferirIcone(item.nome),
+          opcao: 'Padrão',
+          quantidade: Number(item.quantidade)
+        }));
+        atualizarCarrinho();
+      } catch (error) {
+        console.warn('Não foi possível carregar o carrinho:', error);
+      }
+    }
+
+    function inferirIcone(nome) {
+      if (/sabonete/i.test(nome)) return 'droplet';
+      if (/shampoo/i.test(nome)) return 'sparkles';
+      if (/creme/i.test(nome)) return 'flower2';
+      return 'shopping-bag';
+    }
+
+    integrarCatalogoBackend();
+    carregarCarrinhoBackend();
+
     let carrinho = [];
     let produtoSelecionado = null;
     let qtdModal = 1;
@@ -84,11 +161,19 @@ verificarConexaoBackend();
           const preco = parseFloat(card.getAttribute('data-preco'));
           const icone = card.getAttribute('data-icone');
           const opcoes = card.getAttribute('data-opcoes').split(', ');
-          adicionarAoCarrinho(nome, preco, icone, opcoes[0], 1);
+          adicionarAoCarrinho(
+            nome,
+            preco,
+            icone,
+            opcoes[0],
+            1,
+            card.getAttribute('data-produto-id')
+          );
           return;
         }
 
         produtoSelecionado = {
+          id_produto: card.getAttribute('data-produto-id'),
           nome: card.getAttribute('data-nome'),
           preco: parseFloat(card.getAttribute('data-preco')),
           descricao: card.getAttribute('data-descricao'),
@@ -138,21 +223,50 @@ verificarConexaoBackend();
       if (produtoSelecionado) {
         const opcaoEscolhida = detalhesOpcaoSelect.value;
         const nomeCompleto = `${produtoSelecionado.nome} (${opcaoEscolhida})`;
-        adicionarAoCarrinho(nomeCompleto, produtoSelecionado.preco, produtoSelecionado.icone, opcaoEscolhida, qtdModal);
+        adicionarAoCarrinho(
+          nomeCompleto,
+          produtoSelecionado.preco,
+          produtoSelecionado.icone,
+          opcaoEscolhida,
+          qtdModal,
+          produtoSelecionado.id_produto
+        );
         modalProduto.classList.remove('ativo');
         abrirCarrinho();
       }
     });
 
     // ADICIONAR ITEM AO CARRINHO
-    function adicionarAoCarrinho(nome, preco, icone, opcao, quantidade) {
-      const itemExistente = carrinho.find(item => item.nome === nome);
-      if (itemExistente) {
-        itemExistente.quantidade += quantidade;
-      } else {
-        carrinho.push({ nome, preco, icone, opcao, quantidade });
+    async function adicionarAoCarrinho(nome, preco, icone, opcao, quantidade, idProduto) {
+      const usuario = await obterUsuarioLogado();
+      if (!usuario || !usuario.id_cliente) {
+        alert('Faça login antes de adicionar produtos ao carrinho.');
+        window.location.href = '/pages/login/';
+        return;
       }
-      atualizarCarrinho();
+      if (!idProduto) {
+        alert('Este produto ainda não está disponível no catálogo do servidor.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/carrinho`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({
+            id_produto: Number(idProduto),
+            quantidade
+          })
+        });
+        if (!response.ok) {
+          const dados = await response.json().catch(() => ({}));
+          throw new Error(dados.error || `HTTP ${response.status}`);
+        }
+        await carregarCarrinhoBackend();
+      } catch (error) {
+        alert(`Não foi possível adicionar ao carrinho: ${error.message}`);
+      }
     }
 
     // ATUALIZAR INTERFACE DO CARRINHO
@@ -194,24 +308,59 @@ verificarConexaoBackend();
       lucide.createIcons();
     }
 
-    window.alterarQtd = function(index, mudanca) {
-      carrinho[index].quantidade += mudanca;
-      if (carrinho[index].quantidade <= 0) {
-        carrinho.splice(index, 1);
+    window.alterarQtd = async function(index, mudanca) {
+      const item = carrinho[index];
+      if (!item) return;
+      const novaQuantidade = item.quantidade + mudanca;
+
+      if (novaQuantidade <= 0) {
+        await removerItem(index);
+        return;
       }
-      atualizarCarrinho();
+      if (!item.id_carrinho) {
+        item.quantidade = novaQuantidade;
+        atualizarCarrinho();
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/carrinho/${item.id_carrinho}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ quantidade: novaQuantidade })
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        await carregarCarrinhoBackend();
+      } catch (error) {
+        alert(`Não foi possível alterar a quantidade: ${error.message}`);
+      }
     };
 
-    window.removerItem = function(index) {
-      carrinho.splice(index, 1);
-      atualizarCarrinho();
+    window.removerItem = async function(index) {
+      const item = carrinho[index];
+      if (!item) return;
+
+      if (item.id_carrinho) {
+        try {
+          const response = await fetch(`${apiBaseUrl}/carrinho/${item.id_carrinho}`, {
+            method: 'DELETE',
+            credentials: 'include'
+          });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        } catch (error) {
+          alert(`Não foi possível remover o item: ${error.message}`);
+          return;
+        }
+      }
+      await carregarCarrinhoBackend();
     };
 
     btnFinalizarCompra.addEventListener('click', () => {
       if (carrinho.length === 0) {
         alert('Seu carrinho está vazio!');
       } else {
-        alert('A finalização de compras ainda não está integrada. Seu carrinho foi mantido.');
+        window.location.href = '/pages/pagamento/';
       }
     });
 
